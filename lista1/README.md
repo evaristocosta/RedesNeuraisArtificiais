@@ -1,6 +1,6 @@
 # 1ª Lista de Exercícios Computacionais
 
-Todos os detalhes sobre os problemas estão em `pdf`, portanto sua leitura é necessária.
+Todos os detalhes sobre os problemas estão em `lista1.pdf`, portanto sua leitura é necessária.
 
 São resolvidas duas questões, das quais a primeira fala sobre o comportamento de portas lógicas AND, OR e XOR, e a segunda sobre um exemplo prático que envolve dados categóricos de pureza de óleos.
 
