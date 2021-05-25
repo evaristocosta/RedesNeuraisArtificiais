@@ -1,7 +1,7 @@
 import random
 
 
-def funcaoAtivacaoAdaline(x, w):
+def funcao_ativacao_adaline(x, w):
     ativacao = 0
     for i in range(len(x)):
         ativacao += w[i] * x[i]
@@ -15,45 +15,39 @@ def soma(x, w):
     return soma
 
 
-def treinamentoAdaline(dados_treino, taxaAprendizado, repeticoes, desejado):
-    #w_n = [0.0 for i in range(len(dados_treino[0]))]
+def iteracao_treinamento(dados_treino, taxa_aprendizado, desejado, w_n):
+    soma_erro = 0.0
+    for indice, x_n in enumerate(dados_treino):
+        y_n = soma(x_n, w_n)
+        d_n = desejado[indice]
+        erro = d_n - y_n
+        soma_erro += erro**2
+        for i in range(len(x_n)):
+            w_n[i] = w_n[i] + taxa_aprendizado * erro * x_n[i]
+    return soma_erro
+
+
+def treinamento_adaline(dados_treino, taxa_aprendizado, desejado, precisao=False, repeticoes=0):
+    w_n = [random.uniform(0.0, 1.0) for _ in range(len(dados_treino[0]))]
     eqm = []
-    w_n = [random.uniform(0.0, 1.0) for i in range(len(dados_treino[0]))]
-    for i in range(repeticoes):
-        soma_erro = 0.0
-        for indice, x_n in enumerate(dados_treino):
-            y_n = soma(x_n, w_n)
-            d_n = desejado[indice]
-            erro = d_n - y_n
-            soma_erro += erro**2
-            for i in range(len(x_n)):
-                w_n[i] = w_n[i] + taxaAprendizado * erro * x_n[i]
-
-        eqm.append(soma_erro/len(dados_treino))
-        """ print('> iteracao=%d, erro=%.3f' %
-              (iteracao, eqm[-1])) """
-    return w_n, eqm
-
-
-def treinamentoAdalinePrecisao(dados_treino, taxaAprendizado, precisao, desejado):
-    eqm = []
-    eqmAtual = 1
-    w_n = [random.uniform(0.0, 1.0) for i in range(len(dados_treino[0]))]
+    eqm_atual = 1
 
     print('Pesos iniciais do Adaline:')
     print(w_n)
 
-    while eqmAtual > precisao:
-        soma_erro = 0.0
-        for indice, x_n in enumerate(dados_treino):
-            y_n = soma(x_n, w_n)
-            d_n = desejado[indice]
-            erro = d_n - y_n
-            soma_erro += erro**2
-            for i in range(len(x_n)):
-                w_n[i] = w_n[i] + taxaAprendizado * erro * x_n[i]
+    if repeticoes == 0:
+        while eqm_atual > precisao:
+            soma_erro = iteracao_treinamento(
+                dados_treino, taxa_aprendizado, desejado, w_n)
 
-        eqmAtual = soma_erro/len(dados_treino)
-        eqm.append(eqmAtual)
+            eqm_atual = soma_erro/len(dados_treino)
+            eqm.append(eqm_atual)
+    else:
+        for _ in range(repeticoes):
+            soma_erro = iteracao_treinamento(
+                dados_treino, taxa_aprendizado, desejado, w_n)
+
+            eqm_atual = soma_erro/len(dados_treino)
+            eqm.append(eqm_atual)
 
     return w_n, eqm
