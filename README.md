@@ -6,6 +6,8 @@ Cada lista contém exercícios que envolvem desde conceitos iniciais até espec�
 
 Documentos contendo questões e resoluções bem como implementação estão organizados em cada pasta do repositório.
 
+Também, cada pasta contém os requisitos/dependências para sua particular execução.
+
 Resumidamente, cada lista trata do seguinte:
 
 - **Lista 1:** Conceitos iniciais sobre estruturas *Perceptron* e *Adaline*;
