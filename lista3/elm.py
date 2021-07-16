@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #https://medium.datadriveninvestor.com/extreme-learning-machine-for-simple-classification-e776ad797a3c
 __author__ = 'fabiansyahcahyo'
 

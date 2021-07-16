@@ -1,8 +1,5 @@
 # Hopfield Network
-
-# Developer: Thiago Fellipe Ortiz de Camargo
-
-# Standard Imports
+# Desenvolvido por: Thiago Fellipe Ortiz de Camargo
 
 import numpy as np
 import pandas as pd
@@ -16,7 +13,6 @@ def differences(a, b):
 
 
 # Hopfield
-
 class hopfield(object):
 
     def __init__(self, patterns, noise_percentage, pattern_n_row, pattern_n_column, ib, epochs):
@@ -75,5 +71,3 @@ class hopfield(object):
 
             self.outputs = pd.concat(
                 (self.outputs, pd.DataFrame(self.v_current).T))
-
-

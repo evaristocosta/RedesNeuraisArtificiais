@@ -1,20 +1,13 @@
-import os
 import numpy as np
 import matplotlib.pyplot as plt
-from lista3.Hopfield_python import hopfield, differences
-from lista3.carrega_figuras import livros, numeros, letras
+from hopfield_python import hopfield, differences
+from carrega_figuras import livros, numeros, letras
 
 
-def plotFiguras(linhas, colunas, padroes, hp, ruido, nomeArquivo, pastaResultados):
+def plot_figuras(linhas, colunas, padroes, hp):
     estilo = 'cividis'
     memorias = len(padroes)
-    fig1, axs1 = plt.subplots(nrows=1, ncols=memorias,
-                              sharey=True, tight_layout=True, figsize=(memorias-1, 1.5))
-    fig2, axs2 = plt.subplots(nrows=1, ncols=memorias,
-                              sharey=True, tight_layout=True, figsize=(memorias-1, 1.5))
-    fig3, axs3 = plt.subplots(nrows=1, ncols=memorias,
-                              sharey=True, tight_layout=True, figsize=(memorias-1, 1.5))
-
+    _, (axs1, axs2, axs3) = plt.subplots(nrows=3, ncols=memorias, sharex=True)
 
     for indice, padrao in enumerate(padroes):
         axs1[indice].imshow(padrao.reshape(linhas, colunas), cmap=estilo)
@@ -38,22 +31,15 @@ def plotFiguras(linhas, colunas, padroes, hp, ruido, nomeArquivo, pastaResultado
         axs3[indice].set_yticks([0, (linhas-1)])
         axs3[indice].set_yticklabels([1, (linhas)])
 
-    fig1.savefig(f'{pastaResultados}{nomeArquivo}_{ruido}_padrao.png')
-    fig2.savefig(f'{pastaResultados}{nomeArquivo}_{ruido}_ruido.png')
-    fig3.savefig(f'{pastaResultados}{nomeArquivo}_{ruido}_hp.png')
+    plt.show()
 
 
-def figurasHP():
-    pastaResultados = 'resultados_q1/'
-    if not os.path.isdir(pastaResultados):
-        os.mkdir(pastaResultados)
-
+def figuras_hp():
     print("Qual conjunto quer verificar?\n"
           "1 - livro.dat\n"
           "2 - numeros.dat\n"
           "3 - letras.dat")
     conjunto = input("Digite o valor: ")
-    conjuntosPossiveis = ['livro', 'numeros', 'letras']
 
     ruidos = [0.08, 0.1, 0.25, 0.5]
 
@@ -78,29 +64,18 @@ def figurasHP():
 
             diferenca = differences(a, b)
             acerto = (len(a) - diferenca)/len(a)
-            pixelsDistintos = diferenca/len(a)
+            pixels_distintos = diferenca/len(a)
 
             acertos.append(acerto)
-            erros.append(pixelsDistintos)
-
-        nomeArquivo = conjuntosPossiveis[int(conjunto)-1]
-        f = open(f'{pastaResultados}{nomeArquivo}.txt', 'a')
-        f.write(f'Para ruído de {ruido}:\n')
-        f.write(f'Todos acertos: {np.array(acertos)*100}\n')
-        f.write(f'Acerto médio: {np.mean(acertos)*100}%\n')
-        f.write(f'Erro médio: {np.mean(erros)*100}%\n')
-        f.write('---------------------\n')
-        f.close()
-
-        plotFiguras(linhas, colunas, padroes, hp,
-                    ruido, nomeArquivo, pastaResultados)
+            erros.append(pixels_distintos)
 
         print(f'Para ruído de {ruido}:')
-        print(f'Todos acertos: {np.array(acertos)*100}')
         print(f'Acerto médio: {np.mean(acertos)*100}%')
         print(f'Erro médio: {np.mean(erros)*100}%')
         print('---------------------\n')
 
+        plot_figuras(linhas, colunas, padroes, hp)
+
 
 if __name__ == "__main__":
-    figurasHP()
+    figuras_hp()

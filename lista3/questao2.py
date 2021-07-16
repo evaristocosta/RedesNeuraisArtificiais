@@ -1,10 +1,9 @@
-import os
 import numpy as np
 from sklearn.datasets import load_iris, load_wine
 from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, mean_squared_error
-from lista3.elm import ELM
+from elm import ELM
 
 
 def treino():
@@ -12,17 +11,11 @@ def treino():
           "1. IRIS\n"
           "2. WINE\n")
     tipo = input("Digite o número: ")
-    inputsPossiveis = ['IRIS', 'WINE']
 
     # hiperparametros
-    neuroniosTeste = [4, 8, 16, 32, 64]
-    numFolds = 30
+    neuronios_teste = [4, 8, 16, 32, 64]
+    num_folds = 30
     porcentagem = 0.20
-
-    # cria pastas (se não existirem)
-    pastaResultados = 'resultados_q2/'
-    if not os.path.isdir(pastaResultados):
-        os.mkdir(pastaResultados)
 
     # carrega dados de treino (400 dados)
     if tipo == '1':
@@ -39,48 +32,37 @@ def treino():
     normalizador = MinMaxScaler(feature_range=(-1, 1))
     encoder = OneHotEncoder(sparse=False)
 
-    entradaNormalizada = normalizador.fit_transform(entrada)
+    entrada_normalizada = normalizador.fit_transform(entrada)
     # https://gist.github.com/NiharG15/cd8272c9639941cf8f481a7c4478d525
-    saidaNormalizada = encoder.fit_transform(saida)
+    saida_normalizada = encoder.fit_transform(saida)
 
-    entradaTreino, entradaTeste, saidaTreino, saidaTeste = train_test_split(
-        entradaNormalizada, saidaNormalizada, test_size=porcentagem, shuffle=True)
+    entrada_treino, entrada_teste, saida_treino, saida_teste = train_test_split(
+        entrada_normalizada, saida_normalizada, test_size=porcentagem, shuffle=True)
 
-    for neuronios in neuroniosTeste:
+    for neuronios in neuronios_teste:
         acertos = []
         erros = []
 
-        for _ in range(numFolds):
+        for _ in range(num_folds):
             modelo = ELM(
-                entradaNormalizada.shape[1], saidaNormalizada.shape[1], neuronios)
-            modelo.train(entradaTreino, saidaTreino)
+                entrada_normalizada.shape[1], saida_normalizada.shape[1], neuronios)
+            modelo.train(entrada_treino, saida_treino)
 
-            predicao = modelo.predict(entradaTeste)
+            predicao = modelo.predict(entrada_teste)
 
             # transforma em array
             predicao = np.squeeze(np.asarray(predicao))
             predicao = np.argmax(predicao, axis=1)
-            saidaCategorica = np.argmax(saidaTeste, axis=1)
+            saida_categorica = np.argmax(saida_teste, axis=1)
 
-            acerto = accuracy_score(saidaCategorica, predicao) * 100
-            mse = mean_squared_error(saidaCategorica, predicao)
+            acerto = accuracy_score(saida_categorica, predicao) * 100
+            mse = mean_squared_error(saida_categorica, predicao)
 
             acertos.append(acerto)
             erros.append(mse)
 
         print(
             f'Médias para {neuronios} neurônios:\n Acerto: {np.mean(acertos)}\n MSE: {np.mean(erros)}')
-        
-        base = inputsPossiveis[int(tipo)-1]
-        f = open(f'{pastaResultados}{base}.txt', 'a')
-        f.write('------------------\n')
-        f.write(f'ELM de {neuronios} neurônios para base {base}\n')
-        f.write(f'Médias:\n Acerto: {np.mean(acertos)} (+-{np.std(acertos)})\n MSE: {np.mean(erros)} (+-{np.std(erros)})')
-        f.write(f'\n\nTodos acertos: {acertos}')
-        f.write(f'\nTodos erros: {erros}')
-        f.write('\n------------------\n')
-        f.close()
-
 
 
 if __name__ == '__main__':
